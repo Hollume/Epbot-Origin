@@ -22,7 +22,7 @@ PORT = "5432"
 
 """ FishCard Server Setting"""
 CARD_SERVER = ""  # 슬래시로 끝내지 말아주세요
-CARD_TOKEN = ""
+CARD_TOKEN = ""   # epcard에서는 쓰이지 않습니다.
 
 
 """ Discord Bot Configuration """

@@ -29,6 +29,7 @@ from config import SLASH_COMMAND_REGISTER_SERVER as SCRS
 
 # 자체 낚시카드 생성 관련 임포트
 from utils.fish_card.fish_card import get_card
+from utils.fish_card.fish_card_server import get_data
 
 # 물고기 이미지 로드 관련 임포트(실험용)
 # from utils.get_fish_img import get_image
@@ -378,19 +379,18 @@ async def fishing_result(window, user: User, room: Room, fish, effect):
     return throw, window
 
 
-async def get_fishcard_image_file_from_url(fish: Fish):
+async def get_fishcard_image_file_from_url(fish: Fish, room: Room, user: User):
     url = fish.card_url
-    if url.startswith("localhost"):
-        url = "http://" + url
     logger.debug(f"낚시카드 URL: {url}")
+    json_data = await get_data(fish, room, user)
     """낚시카드 서버로부터 받아 온 낚시카드 DiscordFile을 반환"""
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
+        async with session.get(url, json=json_data) as resp:
             if resp.status != 200:
                 logger.warn("서버로부터 낚시카드를 불러올 수 없음.")
                 return
             data = io.BytesIO(await resp.read())
-            return discord.File(data, "fishCard.png")
+            return discord.File(data, "fishcard.png")
 
 
 async def make_fishcard_image_file(fish: Fish, room: Room, user: User):
